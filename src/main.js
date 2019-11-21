@@ -1,5 +1,8 @@
 'use strict';
 
+const FILM_LIST_COUNT = 5;
+const FILM_EXTRA_LIST_COUNT = 2;
+
 const createMainMenuTemplate = () => {
   return (
     `<nav class="main-navigation">
@@ -31,10 +34,12 @@ const createFilmsContainerTemplate = () => {
         </div>
       </section>
       <section class="films-list--extra">
+        <h2 class="films-list__title">Top rated</h2>
         <div class="films-list__container">
         </div>
       </section>
       <section class="films-list--extra">
+        <h2 class="films-list__title">Most commented</h2>
         <div class="films-list__container">
         </div>
       </section>
@@ -61,6 +66,73 @@ const createFilmCardTemplate = () => {
         <button class="film-card__controls-item button film-card__controls-item--favorite">Mark as favorite</button>
       </form>
     </article>`
+  );
+};
+
+const createStatisticContainerTemplate = () => {
+  return (
+    `<section class="statistic">
+    </section>`
+  );
+};
+
+const createStatisticRankTemplate = () => {
+  return (
+    `<p class="statistic__rank">
+      Your rank
+      <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+      <span class="statistic__rank-label">Sci-Fighter</span>
+    </p>`
+  );
+};
+
+const createStatisticFiltersTemplate = () => {
+  return (
+    `<form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
+      <p class="statistic__filters-description">Show stats:</p>
+
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="all-time" checked>
+      <label for="statistic-all-time" class="statistic__filters-label">All time</label>
+
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="today">
+      <label for="statistic-today" class="statistic__filters-label">Today</label>
+
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="week">
+      <label for="statistic-week" class="statistic__filters-label">Week</label>
+
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="month">
+      <label for="statistic-month" class="statistic__filters-label">Month</label>
+
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="year">
+      <label for="statistic-year" class="statistic__filters-label">Year</label>
+    </form>`
+  );
+};
+
+const createStatisticTextListTemplate = () => {
+  return (
+    `<ul class="statistic__text-list">
+      <li class="statistic__text-item">
+        <h4 class="statistic__item-title">You watched</h4>
+        <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+      </li>
+      <li class="statistic__text-item">
+        <h4 class="statistic__item-title">Total duration</h4>
+        <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+      </li>
+      <li class="statistic__text-item">
+        <h4 class="statistic__item-title">Top genre</h4>
+        <p class="statistic__item-text">Sci-Fi</p>
+      </li>
+    </ul>`
+  );
+};
+
+const createStatisticChartTemplate = () => {
+  return (
+    `<div class="statistic__chart-wrap">
+      <canvas class="statistic__chart" width="1000"></canvas>
+    </div>`
   );
 };
 
@@ -238,7 +310,7 @@ const createFilmPopupTemplate = () => {
   );
 };
 
-const createLoadMoreButtonTemplate = () => {
+const createShowMoreButtonTemplate = () => {
   return (
     `<button class="films-list__show-more">Show more</button>`
   );
@@ -258,19 +330,10 @@ const createUserRatingTemplate = () => {
  *
  * @param {object} container -  контейнер в который вставляется разметка
  * @param {opject} template - шаблон вставляемой разметки
- * @param {string} place - место вставки в контейнере
  */
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
+const render = (container, template) => {
+  container.insertAdjacentHTML(`beforeEnd`, template);
 };
-
-const headerElement = document.querySelector(`.header`);
-render(headerElement, createUserRatingTemplate(), `beforeEnd`);
-
-const mainElement = document.querySelector(`.main`);
-render(mainElement, createMainMenuTemplate(), `beforeEnd`);
-render(mainElement, createSortMenuTemplate(), `beforeEnd`);
-render(mainElement, createFilmsContainerTemplate(), `beforeEnd`);
 
 /**
  * Рендерит разметку
@@ -278,30 +341,39 @@ render(mainElement, createFilmsContainerTemplate(), `beforeEnd`);
  * @param {string} cardCount -  количество карточек для рендера
  * @param {object} container -  контейнер в который вставляется разметка
  * @param {opject} template - шаблон вставляемой разметки
- * @param {string} place - место вставки в контейнере
  */
-const renderCards = (cardCount, container, template, place) => {
-  new Array(cardCount)
-    .fill(``)
-    .forEach(
-        () => render(container, template(), place)
-    );
+const renderCards = (cardCount, container, template) => {
+  for (let i = 0; i < cardCount; i++) {
+    render(container, template());
+  }
 };
+
+const headerElement = document.querySelector(`.header`);
+render(headerElement, createUserRatingTemplate());
+
+const mainElement = document.querySelector(`.main`);
+render(mainElement, createMainMenuTemplate());
+render(mainElement, createSortMenuTemplate());
+render(mainElement, createFilmsContainerTemplate());
 
 const filmsContainerElement = mainElement.querySelector(`.films`);
 const filmsListElement = filmsContainerElement.querySelector(`.films-list`);
 const filmListContainerElement = filmsListElement.querySelector(`.films-list__container`);
-const FILM_LIST_COUNT = 5;
-
-renderCards(FILM_LIST_COUNT, filmListContainerElement, createFilmCardTemplate, `beforeEnd`);
+renderCards(FILM_LIST_COUNT, filmListContainerElement, createFilmCardTemplate);
 
 const filmListTopRatedElement = filmsContainerElement.querySelector(`.films-list--extra:nth-child(2) > .films-list__container`);
 const filmListMostCommetedElement = filmsContainerElement.querySelector(`.films-list--extra:nth-child(3) > .films-list__container`);
-const FILM__EXTRA_LIST_COUNT = 2;
-renderCards(FILM__EXTRA_LIST_COUNT, filmListTopRatedElement, createFilmCardTemplate, `beforeEnd`);
-renderCards(FILM__EXTRA_LIST_COUNT, filmListMostCommetedElement, createFilmCardTemplate, `beforeEnd`);
+renderCards(FILM_EXTRA_LIST_COUNT, filmListTopRatedElement, createFilmCardTemplate);
+renderCards(FILM_EXTRA_LIST_COUNT, filmListMostCommetedElement, createFilmCardTemplate);
 
-render(filmsListElement, createLoadMoreButtonTemplate(), `beforeEnd`);
+render(filmsListElement, createShowMoreButtonTemplate());
+
+render(mainElement, createStatisticContainerTemplate());
+const statisticElement = mainElement.querySelector(`.statistic`);
+render(statisticElement, createStatisticRankTemplate());
+render(statisticElement, createStatisticFiltersTemplate());
+render(statisticElement, createStatisticTextListTemplate());
+render(statisticElement, createStatisticChartTemplate());
 
 const bodyElement = document.querySelector(`body`);
-render(bodyElement, createFilmPopupTemplate(), `beforeEnd`);
+render(bodyElement, createFilmPopupTemplate());
