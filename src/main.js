@@ -336,7 +336,7 @@ const render = (container, template) => {
 };
 
 /**
- * Рендерит разметку
+ * Рендерит разметку карточек
  *
  * @param {string} cardCount -  количество карточек для рендера
  * @param {object} container -  контейнер в который вставляется разметка
