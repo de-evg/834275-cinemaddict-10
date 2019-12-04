@@ -132,7 +132,10 @@ const generateFilmCard = () => {
     director: getRandomArrayItem(Directos),
     writers: getRandomArrayItem(Writers),
     actors: getRandomArrayItem(Actors),
-    country: getRandomArrayItem(Countries)
+    country: getRandomArrayItem(Countries),
+    inWatchlist: !!getRandomNumber(0, 1),
+    isFavorite: !!getRandomNumber(0, 1),
+    isWatched: !!getRandomNumber(0, 1)
   };
 };
 

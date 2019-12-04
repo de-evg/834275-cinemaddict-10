@@ -42,7 +42,31 @@ const headerElement = document.querySelector(`.header`);
 render(headerElement, createUserRatingTemplate());
 
 const mainElement = document.querySelector(`.main`);
-render(mainElement, createMainMenuTemplate());
+
+const generateMainMenuCounts = (films) => {
+  const mainMenuCount = {
+    watchlist: 0,
+    watched: 0,
+    favorite: 0
+  };
+
+  films.forEach((film) => {
+    if (film.inWatchlist) {
+      mainMenuCount.watchlist += 1;
+    }
+    if (film.isWatched) {
+      mainMenuCount.watched += 1;
+    }
+    if (film.isFavorite) {
+      mainMenuCount.favorite += 1;
+    }
+  });
+  return mainMenuCount
+};
+
+const mainMenuCount = generateMainMenuCounts(films);
+
+render(mainElement, createMainMenuTemplate(mainMenuCount));
 render(mainElement, createSortMenuTemplate());
 render(mainElement, createFilmsContainerTemplate());
 
