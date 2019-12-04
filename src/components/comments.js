@@ -1,10 +1,10 @@
 import {Comments, CommentAuthors} from '../mock/comments.js';
-import {getRandomArrayItem} from './utils.js';
+import {getRandomItemFromArray} from './utils.js';
 
 const createCommentTemplate = () => {
 
-  const comment = getRandomArrayItem(Comments);
-  const authorName = getRandomArrayItem(CommentAuthors);
+  const comment = getRandomItemFromArray(Comments);
+  const authorName = getRandomItemFromArray(CommentAuthors);
 
   return (
     `<li class="film-details__comment">

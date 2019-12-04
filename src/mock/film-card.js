@@ -1,5 +1,5 @@
-import {filmDescTemplate, ageRating, MonthNames} from './const.js';
-import {getRandomArrayItem, getRandomNumber} from '../components/utils.js';
+import {descTemplates, ageRating, MonthNames} from './const.js';
+import {getRandomItemFromArray, getRandomNumber} from '../components/utils.js';
 
 const FILMS_COUNT = 15;
 const MIN_SENTENCE_COUNT = 1;
@@ -40,7 +40,7 @@ const FilmNames = [
   `Омерзительная восьмерка`
 ];
 
-const Posters = [
+const PostersURLs = [
   `./images/posters/made-for-each-other.png`,
   `./images/posters/popeye-meets-sinbad.png`,
   `./images/posters/sagebrush-trail.jpg`,
@@ -83,8 +83,6 @@ const Actors = [
   `Pierre Richard`
 ];
 
-const descriptionTemplates = filmDescTemplate.split(`. `);
-
 const generateReleaseRandomDate = (start, end) => {
   const date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   let day = date.getDate();
@@ -97,7 +95,7 @@ const generateFilmDescription = () => {
   const sentenceCount = getRandomNumber(MIN_SENTENCE_COUNT, MAX_SENTENCE_COUNT);
   let description = ``;
   for (let i = 1; i <= sentenceCount; i++) {
-    description += `${getRandomArrayItem(descriptionTemplates)}. `;
+    description += `${getRandomItemFromArray(descTemplates)}`;
   }
   return description;
 };
@@ -111,28 +109,28 @@ const generateFilmDuration = (duration) => {
 const generateGenres = () => {
   const genres = new Set();
   for (let i = 0; i < 3; i++) {
-    genres.add(getRandomArrayItem(Genres));
+    genres.add(getRandomItemFromArray(Genres));
   }
   return genres;
 };
 
 const generateFilmCard = () => {
   return {
-    title: getRandomArrayItem(FilmNames),
-    originalTitle: getRandomArrayItem(FilmNames),
+    title: getRandomItemFromArray(FilmNames),
+    originalTitle: getRandomItemFromArray(FilmNames),
     rating: getRandomNumber(filmRating.MIN, filmRating.MAX),
     year: generateReleaseRandomDate(new Date(1900, 0, 1), new Date()).slice(-5, -1),
     releaseDate: generateReleaseRandomDate(new Date(1900, 0, 1), new Date()),
     duration: generateFilmDuration(filmDuration),
     genres: Array.from(generateGenres()),
-    poster: getRandomArrayItem(Posters),
+    posterURL: getRandomItemFromArray(PostersURLs),
     description: generateFilmDescription(),
-    comments: getRandomNumber(filmComment.MIN, filmComment.MAX),
-    ageRating: getRandomArrayItem(ageRating),
-    director: getRandomArrayItem(Directos),
-    writers: getRandomArrayItem(Writers),
-    actors: getRandomArrayItem(Actors),
-    country: getRandomArrayItem(Countries),
+    commentsCount: getRandomNumber(filmComment.MIN, filmComment.MAX),
+    ageRating: getRandomItemFromArray(ageRating),
+    director: getRandomItemFromArray(Directos),
+    writers: getRandomItemFromArray(Writers),
+    actors: getRandomItemFromArray(Actors),
+    country: getRandomItemFromArray(Countries),
     inWatchlist: !!getRandomNumber(0, 1),
     isFavorite: !!getRandomNumber(0, 1),
     isWatched: !!getRandomNumber(0, 1)

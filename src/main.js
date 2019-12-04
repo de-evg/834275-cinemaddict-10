@@ -19,21 +19,14 @@ const FILM_LIST_COUNT = 5;
 const SHOWING_FILMS_BY_BUTTON_COUNT = 5;
 const FILM_EXTRA_LIST_COUNT = 2;
 
-/**
- * Рендерит разметку
- *
- * @param {object} container -  контейнер в который вставляется разметка
- * @param {opject} template - шаблон вставляемой разметки
- */
 const render = (container, template) => {
   container.insertAdjacentHTML(`beforeEnd`, template);
 };
 
-const renderManyTemplates = (cardCount, container, template, films) => {
-  let showingFilmsCount = cardCount;
+const renderManyTemplates = (showingFilmsCount, container, films) => {
   films.slice(0, showingFilmsCount).forEach(
     (film) => {
-      render(container, template(film));
+      render(container, createFilmCardTemplate(film));
     }
   );
 };
@@ -74,8 +67,7 @@ const filmsContainerElement = mainElement.querySelector(`.films`);
 const filmsListElement = filmsContainerElement.querySelector(`.films-list`);
 const filmListContainerElement = filmsListElement.querySelector(`.films-list__container`);
 
-renderManyTemplates(FILM_LIST_COUNT, filmListContainerElement, createFilmCardTemplate, films);
-
+renderManyTemplates(FILM_LIST_COUNT, filmListContainerElement, films);
 
 const filmListTopRatedElement = filmsContainerElement
   .querySelector(`.films-list--extra:nth-child(2) > .films-list__container`);
@@ -91,9 +83,8 @@ const haveComments = films.some((film) => {
 });
 if (haveRating) {
   const topRatedFilms = films
-    .slice()
     .sort((a, b) => b.rating - a.rating);
-  renderManyTemplates(FILM_EXTRA_LIST_COUNT, filmListTopRatedElement, createFilmCardTemplate, topRatedFilms);
+  renderManyTemplates(FILM_EXTRA_LIST_COUNT, filmListTopRatedElement, topRatedFilms);
 } else {
   const topRatedElement = filmsContainerElement
     .querySelector(`.films-list--extra:nth-child(2)`);
@@ -102,9 +93,8 @@ if (haveRating) {
 
 if (haveComments) {
   const mostCommentedFilms = films
-    .slice()
-    .sort((a, b) => b.comments - a.comments);
-  renderManyTemplates(FILM_EXTRA_LIST_COUNT, filmListMostCommetedElement, createFilmCardTemplate, mostCommentedFilms);
+    .sort((a, b) => b.commentsCount - a.commentsCount);
+  renderManyTemplates(FILM_EXTRA_LIST_COUNT, filmListMostCommetedElement, mostCommentedFilms);
 } else {
   const topCommentedElement = filmsContainerElement
     .querySelector(`.films-list--extra:nth-child(3)`);
@@ -143,6 +133,11 @@ render(bodyElement, createFilmPopupTemplate(films[0]));
 
 const popup = bodyElement.querySelector(`.film-details`);
 const commentsList = popup.querySelector(`.film-details__comments-list`);
-for (let i = 0; i < films[0].comments; i++) {
+for (let i = 0; i < films[0].commentsCount; i++) {
   render(commentsList, createCommentTemplate());
 }
+
+const popupRemoveButton = popup.querySelector(`.film-details__close-btn`);
+popupRemoveButton.addEventListener(`click`, () => {
+  popup.remove();
+});

@@ -1,10 +1,11 @@
 import {films} from '../mock/film-card.js';
 
-const {poster, ageRating, title, originalTitle, rating, director, writers,
-  actors, year, duration, country, description, comments} = films[0];
+const {posterURL, ageRating, title, originalTitle, rating, director, writers,
+  actors, year, duration, country, description, commentsCount} = films[0];
 
 const createFilmPopupTemplate = (filmCard) => {
   let genreRows = [];
+
   const createGenresTemplate = (genres) => {
     genres.forEach((genre) => {
       genreRows.push(`<span class="film-details__genre">${genre}</span>`);
@@ -21,7 +22,7 @@ const createFilmPopupTemplate = (filmCard) => {
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="${poster}" alt="">
+              <img class="film-details__poster-img" src="${posterURL}" alt="">
 
               <p class="film-details__age">${ageRating}</p>
             </div>
@@ -91,7 +92,7 @@ const createFilmPopupTemplate = (filmCard) => {
 
         <div class="form-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments}</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
 
             <ul class="film-details__comments-list">
             </ul>
