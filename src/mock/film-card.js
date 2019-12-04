@@ -2,6 +2,7 @@ import {descTemplates, ageRating, MonthNames} from './const.js';
 import {getRandomItemFromArray, getRandomNumber} from '../components/utils.js';
 
 const FILMS_COUNT = 15;
+
 const MIN_SENTENCE_COUNT = 1;
 const MAX_SENTENCE_COUNT = 3;
 
