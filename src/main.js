@@ -12,7 +12,6 @@ import {createStatisticRankTemplate} from  './components/statistic-rank.js';
 import {createStatisticTextListTemplate} from  './components/statistic-text-list.js';
 import {createStatisticChartTemplate} from  './components/statistic-chart.js';
 import {createCommentTemplate} from './components/comments.js';
-import {getRandomArrayItem} from './components/utils.js';
 import {films} from './mock/film-card.js';
 
 const FILM_LIST_COUNT = 5;
@@ -30,11 +29,6 @@ const renderManyTemplates = (showingFilmsCount, container, films) => {
     }
   );
 };
-
-const headerElement = document.querySelector(`.header`);
-render(headerElement, createUserRatingTemplate());
-
-const mainElement = document.querySelector(`.main`);
 
 const generateMainMenuCounts = (films) => {
   const mainMenuCount = {
@@ -54,68 +48,70 @@ const generateMainMenuCounts = (films) => {
       mainMenuCount.favorite += 1;
     }
   });
-  return mainMenuCount
+  return mainMenuCount;
 };
 
-const mainMenuCount = generateMainMenuCounts(films);
+const sortingFilmsByRating = (films) => {
+  const haveRating = films.some((film) => {
+    return film.rating !== 0;
+  });
 
+  if (haveRating) {
+    const topRatedFilms = films
+      .sort((a, b) => b.rating - a.rating);
+  } else {
+    topRatedFilmsContainerElement.remove();
+  }
+  return haveRating;
+};
+
+const sortingFilmsByMostCommented = (films) => {
+  const haveComments = films.some((film) => {
+    return film.comments !== 0;
+  });
+
+  if (haveComments) {
+    const mostCommentedFilms = films
+      .sort((a, b) => b.commentsCount - a.commentsCount);
+  } else {
+    const mostCommentedElement = document.querySelector(`.films-list--extra:nth-child(3)`);
+      mostCommentedFilmsContainerElement.remove();
+  }
+  return haveComments;
+};
+
+const headerElement = document.querySelector(`.header`);
+render(headerElement, createUserRatingTemplate());
+
+const mainElement = document.querySelector(`.main`);
+const mainMenuCount = generateMainMenuCounts(films);
 render(mainElement, createMainMenuTemplate(mainMenuCount));
 render(mainElement, createSortMenuTemplate());
 render(mainElement, createFilmsContainerTemplate());
 
-const filmsContainerElement = mainElement.querySelector(`.films`);
-const filmsListElement = filmsContainerElement.querySelector(`.films-list`);
+const filmsListElement = document.querySelector(`.films-list`);
 const filmListContainerElement = filmsListElement.querySelector(`.films-list__container`);
 
 renderManyTemplates(FILM_LIST_COUNT, filmListContainerElement, films);
 
-const filmListTopRatedElement = filmsContainerElement
+const topRatedFilmListContainerElement = document
   .querySelector(`.films-list--extra:nth-child(2) > .films-list__container`);
-const filmListMostCommetedElement = filmsContainerElement
+const mostCommentedFilmsContainerElement = document
   .querySelector(`.films-list--extra:nth-child(3) > .films-list__container`);
 
-const haveRating = films.some((film) => {
-  return film.rating !== 0
-});
-
-const haveComments = films.some((film) => {
-  return film.comments !== 0
-});
-if (haveRating) {
-  const topRatedFilms = films
-    .sort((a, b) => b.rating - a.rating);
-  renderManyTemplates(FILM_EXTRA_LIST_COUNT, filmListTopRatedElement, topRatedFilms);
-} else {
-  const topRatedElement = filmsContainerElement
-    .querySelector(`.films-list--extra:nth-child(2)`);
-  topRatedElement.remove();
-};
-
-if (haveComments) {
-  const mostCommentedFilms = films
-    .sort((a, b) => b.commentsCount - a.commentsCount);
-  renderManyTemplates(FILM_EXTRA_LIST_COUNT, filmListMostCommetedElement, mostCommentedFilms);
-} else {
-  const topCommentedElement = filmsContainerElement
-    .querySelector(`.films-list--extra:nth-child(3)`);
-    topCommentedElement.remove();
-};
+if (sortingFilmsByRating(films)) {
+  renderManyTemplates(FILM_EXTRA_LIST_COUNT, topRatedFilmListContainerElement, films);
+}
+if (sortingFilmsByMostCommented(films)) {
+  renderManyTemplates(FILM_EXTRA_LIST_COUNT, mostCommentedFilmsContainerElement, films);
+}
 
 render(filmsListElement, createShowMoreButtonTemplate());
 
-render(mainElement, createStatisticContainerTemplate());
-const statisticElement = mainElement.querySelector(`.statistic`);
-render(statisticElement, createStatisticRankTemplate());
-render(statisticElement, createStatisticFiltersTemplate());
-render(statisticElement, createStatisticTextListTemplate());
-render(statisticElement, createStatisticChartTemplate());
-
-const siteFooter = document.querySelector(`.footer`);
-const footerMovieStatistic = siteFooter.querySelector(`.footer__statistics p`);
-footerMovieStatistic.textContent = `${films.length} movies inside`;
+let showingFilmsCount = FILM_LIST_COUNT;
 
 const showMoreButton = filmsListElement.querySelector(`.films-list__show-more`);
-let showingFilmsCount = FILM_LIST_COUNT;
+
 showMoreButton.addEventListener(`click`, () => {
   const prevFilmsCount = showingFilmsCount;
   showingFilmsCount += SHOWING_FILMS_BY_BUTTON_COUNT;
@@ -125,18 +121,24 @@ showMoreButton.addEventListener(`click`, () => {
 
   if (showingFilmsCount > films.length) {
     showMoreButton.remove();
-  };
+  }
 });
+
+render(mainElement, createStatisticContainerTemplate());
+
+const statisticElement = mainElement.querySelector(`.statistic`);
+render(statisticElement, createStatisticRankTemplate());
+render(statisticElement, createStatisticFiltersTemplate());
+render(statisticElement, createStatisticTextListTemplate());
+render(statisticElement, createStatisticChartTemplate());
+
+const footerMovieStatistic = document.querySelector(`.footer__statistics p`);
+footerMovieStatistic.textContent = `${films.length} movies inside`;
 
 const bodyElement = document.querySelector(`body`);
 render(bodyElement, createFilmPopupTemplate(films[0]));
 
 const popup = bodyElement.querySelector(`.film-details`);
-const commentsList = popup.querySelector(`.film-details__comments-list`);
-for (let i = 0; i < films[0].commentsCount; i++) {
-  render(commentsList, createCommentTemplate());
-}
-
 const popupRemoveButton = popup.querySelector(`.film-details__close-btn`);
 popupRemoveButton.addEventListener(`click`, () => {
   popup.remove();

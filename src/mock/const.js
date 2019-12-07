@@ -25,7 +25,8 @@ const MonthNames = [
   `December`,
 ];
 
-
 const ageRating = [`0`, `6+`, `12+`, `16+`, `18+`];
 
-export {descTemplates, ageRating, MonthNames};
+const userRatings = [`none`, `Novice`, `Fan`, `Movie Buff`];
+
+export {descTemplates, ageRating, MonthNames, userRatings};

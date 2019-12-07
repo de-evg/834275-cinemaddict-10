@@ -1,4 +1,5 @@
-import {userRatings, numberOfRatingName} from '../mock/user-rating.js';
+import {numberOfRatingName} from '../mock/user-rating.js';
+import {userRatings} from '../mock/const.js';
 
 const createUserRatingTemplate = () => {
   if (numberOfRatingName === 0) {

@@ -1,9 +1,7 @@
-import {films} from '../mock/film-card.js';
+import {Comments, CommentAuthors} from '../mock/comments.js';
+import {getRandomItemFromArray} from './utils.js';
 
-const {posterURL, ageRating, title, originalTitle, rating, director, writers,
-  actors, year, duration, country, description, commentsCount} = films[0];
-
-const createFilmPopupTemplate = (filmCard) => {
+const createFilmPopupTemplate = (film) => {
   let genreRows = [];
 
   const createGenresTemplate = (genres) => {
@@ -11,6 +9,28 @@ const createFilmPopupTemplate = (filmCard) => {
       genreRows.push(`<span class="film-details__genre">${genre}</span>`);
     });
     return genreRows.join(`\n`);
+  };
+
+  const createCommentTemplate = (commentsCount) => {
+    let commentsRows = [];
+    for (let i = 0; i < commentsCount; i++) {
+      const comment = getRandomItemFromArray(Comments);
+      const authorName = getRandomItemFromArray(CommentAuthors);
+      commentsRows.push(`<li class="film-details__comment">
+                          <span class="film-details__comment-emoji">
+                            <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji">
+                          </span>
+                          <div>
+                            <p class="film-details__comment-text">${comment}</p>
+                            <p class="film-details__comment-info">
+                              <span class="film-details__comment-author">${authorName}</span>
+                              <span class="film-details__comment-day">2019/12/31 23:59</span>
+                              <button class="film-details__comment-delete">Delete</button>
+                            </p>
+                          </div>
+                        </li>`);
+    }
+    return commentsRows.join(`\n`);
   };
 
   return (
@@ -22,58 +42,58 @@ const createFilmPopupTemplate = (filmCard) => {
           </div>
           <div class="film-details__info-wrap">
             <div class="film-details__poster">
-              <img class="film-details__poster-img" src="${posterURL}" alt="">
+              <img class="film-details__poster-img" src="${film.posterURL}" alt="">
 
-              <p class="film-details__age">${ageRating}</p>
+              <p class="film-details__age">${film.ageRating}</p>
             </div>
 
             <div class="film-details__info">
               <div class="film-details__info-head">
                 <div class="film-details__title-wrap">
-                  <h3 class="film-details__title">${title}</h3>
-                  <p class="film-details__title-original">Original: ${originalTitle}</p>
+                  <h3 class="film-details__title">${film.title}</h3>
+                  <p class="film-details__title-original">Original: ${film.originalTitle}</p>
                 </div>
 
                 <div class="film-details__rating">
-                  <p class="film-details__total-rating">${rating}</p>
+                  <p class="film-details__total-rating">${film.rating}</p>
                 </div>
               </div>
 
               <table class="film-details__table">
                 <tr class="film-details__row">
                   <td class="film-details__term">Director</td>
-                  <td class="film-details__cell">${director}</td>
+                  <td class="film-details__cell">${film.director}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Writers</td>
-                  <td class="film-details__cell">${writers}</td>
+                  <td class="film-details__cell">${film.writers}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Actors</td>
-                  <td class="film-details__cell">${actors}a</td>
+                  <td class="film-details__cell">${film.actors}a</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${year}</td>
+                  <td class="film-details__cell">${film.year}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${duration}</td>
+                  <td class="film-details__cell">${film.duration}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
-                  <td class="film-details__cell">${country}</td>
+                  <td class="film-details__cell">${film.country}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">${filmCard.genres.length > 1 ? `Genres` : `Genre`}</td>
+                  <td class="film-details__term">${film.genres.length > 1 ? `Genres` : `Genre`}</td>
                   <td class="film-details__cell">
-                  ${createGenresTemplate(filmCard.genres)}
+                  ${createGenresTemplate(film.genres)}
                   </td>
                 </tr>
               </table>
 
               <p class="film-details__film-description">
-                ${description}
+                ${film.description}
               </p>
             </div>
           </div>
@@ -92,9 +112,10 @@ const createFilmPopupTemplate = (filmCard) => {
 
         <div class="form-details__bottom-container">
           <section class="film-details__comments-wrap">
-            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${commentsCount}</span></h3>
+            <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${film.commentsCount}</span></h3>
 
             <ul class="film-details__comments-list">
+            ${createCommentTemplate(film.commentsCount)}
             </ul>
 
             <div class="film-details__new-comment">
